@@ -21,7 +21,7 @@ Sukku is a lightweight recon automation framework built with Go.
 ## Installation
 
 ```bash
-git clone https://github.com/yourusername/sukku.git
+git clone https://github.com/h4ckerstark1/sukku.git
 cd sukku
 go build -o sukku
 ```
