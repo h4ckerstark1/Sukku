@@ -1,4 +1,35 @@
 ![image alt](https://github.com/h4ckerstark1/Sukku/blob/main/sukku%20screenshot.jpeg?raw=true)
+<p align="center">
+
+<img src="https://img.shields.io/badge/version-v1.0.0-green">
+<img src="https://img.shields.io/badge/language-Go-blue">
+<img src="https://img.shields.io/badge/platform-Linux-orange">
+<img src="https://img.shields.io/badge/license-MIT-yellow">
+<img src="https://img.shields.io/badge/status-active-success">
+
+<br>
+
+<img src="https://img.shields.io/badge/maintained-yes-brightgreen">
+<img src="https://img.shields.io/badge/type-Recon_Framework-red">
+<img src="https://img.shields.io/badge/interface-CLI-black">
+<img src="https://img.shields.io/badge/Open--Source-Yes-blueviolet">
+
+<br>
+
+<img src="https://img.shields.io/badge/Security-Research-darkgreen">
+<img src="https://img.shields.io/badge/Bug_Bounty-Friendly-purple">
+<img src="https://img.shields.io/badge/Author-H4ckerStark1-red">
+
+<br>
+
+<img src="https://img.shields.io/badge/build-stable-success">
+<img src="https://img.shields.io/badge/Powered_By-Golang-cyan">
+
+<br><br>
+
+Made possible by <b>H4ckerStark1</b>
+
+</p>
 # Sukku Recon Framework
 
 Sukku is a lightweight recon automation framework built with Go.
