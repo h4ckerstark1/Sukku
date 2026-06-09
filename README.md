@@ -86,6 +86,14 @@ go build -o sukku
 - nuclei.txt
 - jsfiles.txt
 
+ ## 💬 Discussion
+
+Have questions / doubts / ideas to discuss?
+
+Feel free to open a discussion on the GitHub Discussions board.
+
+[GitHub Discussions](https://github.com/h4ckerstark1/Sukku/discussions/1)
+
 ## Disclaimer
 
 This project is made for educational and authorized security testing purposes only.
