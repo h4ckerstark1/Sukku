@@ -28,12 +28,13 @@
 
 <br><br>
 
-Made possible by <b>H4ckerStark1</b>
+<p align="center">
+ Made possible by <b>Ayush Sharma [h4ckerstark1]</b>
 
 </p>
- <h1></h1></h># Sukku Recon Framework</h1>
+ <h1 align="center">Sukku Recon Framework</h1>
 
-Sukku is a lightweight recon automation framework built with Go.
+<p align="center">Sukku is a lightweight recon automation framework built with Go.</p>
 
 ## Features
 
