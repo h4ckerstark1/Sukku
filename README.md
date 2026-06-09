@@ -1,3 +1,4 @@
+![image alt](https://github.com/h4ckerstark1/Sukku/blob/main/sukku%20screenshot.jpeg?raw=true)
 # Sukku Recon Framework
 
 Sukku is a lightweight recon automation framework built with Go.
