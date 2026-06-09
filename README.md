@@ -1,4 +1,5 @@
-![image alt](https://github.com/h4ckerstark1/Sukku/blob/main/sukku%20screenshot.jpeg?raw=true)
+<p align="center">
+  <img src="https://github.com/h4ckerstark1/Sukku/blob/main/sukku%20screenshot.jpeg?raw=true" width="900" alt="sukku screenshot">
 <p align="center">
 
 <img src="https://img.shields.io/badge/version-v1.0.0-green">
