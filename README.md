@@ -2,7 +2,7 @@
   <img src="https://github.com/h4ckerstark1/Sukku/blob/main/sukku%20screenshot.jpeg?raw=true" width="900" alt="sukku screenshot">
 <p align="center">
 
-<img src="https://img.shields.io/badge/version-v1.0.0-green">
+<img src="https://img.shields.io/badge/version-v1.1.0-green">
 <img src="https://img.shields.io/badge/language-Go-blue">
 <img src="https://img.shields.io/badge/platform-Linux-orange">
 <img src="https://img.shields.io/badge/license-MIT-yellow">
@@ -43,6 +43,8 @@
 - Port Scanning
 - Nuclei Vulnerability Scanning
 - JavaScript File Finder
+- Screenshots
+- Wayback URLs
 
 ## Tools Used
 
@@ -64,6 +66,8 @@ go build -o sukku
 
 ```bash
 ./sukku -d target.com
+./sukku -d example.com --screenshots
+./sukku -d example.com --wayback
 ```
 
 ## Help Menu
@@ -85,6 +89,8 @@ go build -o sukku
 - ports.txt
 - nuclei.txt
 - jsfiles.txt
+- screenshots/
+- wayback.txt
 
  ## 💬 Discussion
 
