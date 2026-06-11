@@ -1,0 +1,254 @@
+package main
+
+import (
+	"flag"
+	"fmt"
+	"os"
+	"os/exec"
+
+	"github.com/fatih/color"
+)
+
+var (
+	version = "v1.1.0"
+
+	white  = color.New(color.FgHiWhite).SprintFunc()
+	red    = color.New(color.FgHiRed).SprintFunc()
+	blue   = color.New(color.FgHiBlue).SprintFunc()
+	green  = color.New(color.FgHiGreen).SprintFunc()
+	yellow = color.New(color.FgHiYellow).SprintFunc()
+)
+
+func banner() {
+
+	banner := white(`
+
+███████╗██╗   ██╗██╗  ██╗██╗  ██╗██╗   ██╗
+██╔════╝██║   ██║██║ ██╔╝██║ ██╔╝██║   ██║
+███████╗██║   ██║█████╔╝ █████╔╝ ██║   ██║
+╚════██║██║   ██║██╔═██╗ ██╔═██╗ ██║   ██║
+███████║╚██████╔╝██║  ██╗██║  ██╗╚██████╔╝
+╚══════╝ ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝
+
+`)
+
+	fmt.Println(banner)
+
+	fmt.Println(blue("         Sukku Recon Framework"))
+	fmt.Println(white("                By Ayush Sharma"))
+	fmt.Println(green("              Version " + version))
+	fmt.Println()
+}
+
+func info(msg string) {
+	fmt.Println(blue("[INFO]"), white(msg))
+}
+
+func success(msg string) {
+	fmt.Println(green("[SUCCESS]"), white(msg))
+}
+
+func failed(msg string) {
+	fmt.Println(red("[ERROR]"), white(msg))
+}
+
+func subfinder(domain string) {
+
+	info("Running Subfinder")
+
+	cmd := exec.Command("subfinder", "-d", domain, "-silent")
+
+	output, err := cmd.Output()
+
+	if err != nil {
+		failed(err.Error())
+		return
+	}
+
+	os.WriteFile("subdomains.txt", output, 0644)
+
+	success("Subdomains saved in subdomains.txt")
+}
+
+func httpx() {
+
+	info("Running HTTPX")
+
+	command := "cat subdomains.txt | httpx -silent"
+
+	cmd := exec.Command("bash", "-c", command)
+
+	output, err := cmd.Output()
+
+	if err != nil {
+		failed(err.Error())
+		return
+	}
+
+	os.WriteFile("live.txt", output, 0644)
+
+	success("Live domains saved in live.txt")
+}
+
+func portscan() {
+
+	info("Running Port Scan")
+
+	command := "nmap -iL live.txt -Pn"
+
+	cmd := exec.Command("bash", "-c", command)
+
+	output, err := cmd.Output()
+
+	if err != nil {
+		failed(err.Error())
+		return
+	}
+
+	os.WriteFile("ports.txt", output, 0644)
+
+	success("Port scan saved in ports.txt")
+}
+
+func nuclei() {
+
+	info("Running Nuclei Scan")
+
+	command := "cat live.txt | nuclei -silent"
+
+	cmd := exec.Command("bash", "-c", command)
+
+	output, err := cmd.Output()
+
+	if err != nil {
+		failed(err.Error())
+		return
+	}
+
+	os.WriteFile("nuclei.txt", output, 0644)
+
+	success("Nuclei results saved in nuclei.txt")
+}
+
+func jsfinder() {
+
+	info("Running JS Finder")
+
+	command := "cat live.txt | katana -silent | grep '.js' || true"
+	cmd := exec.Command("bash", "-c", command)
+
+	output, err := cmd.Output()
+
+	if err != nil {
+		failed(err.Error())
+		return
+	}
+
+	os.WriteFile("jsfiles.txt", output, 0644)
+
+	success("JS files saved in jsfiles.txt")
+}
+
+func screenshots() {
+
+	info("Running Screenshot Module")
+	os.Mkdir("screenshots", 0755)
+
+        data := []byte("Screenshot module working\n")
+
+
+        os.WriteFile("screenshots/test.txt", data,0644)
+
+
+	success("Screenshots folder created")
+}
+
+func helpmenu() {
+
+	fmt.Println(yellow("TARGET OPTIONS:"))
+	fmt.Println()
+
+	fmt.Println(white("  -d domain.tld      Target domain"))
+	fmt.Println(white("  -l list.txt        Target list"))
+	fmt.Println()
+
+	fmt.Println(yellow("SCAN OPTIONS:"))
+	fmt.Println()
+
+	fmt.Println(white("  -subs              Subdomain scan"))
+	fmt.Println(white("  -httpx             Live host detection"))
+	fmt.Println(white("  -portscan          Port scanning"))
+	fmt.Println(white("  -nuclei            Vulnerability scan"))
+	fmt.Println(white("  -jsfinder          JavaScript file finder"))
+        fmt.Println(white(" --screenshots       Website screenshots"))
+        fmt.Println(white(" --wayback           Historical URLs"))
+	fmt.Println()
+
+	fmt.Println(yellow("GENERAL OPTIONS:"))
+	fmt.Println()
+
+	fmt.Println(white("  -h                 Show help menu"))
+	fmt.Println(white("  -v                 Show version"))
+	fmt.Println()
+
+	fmt.Println(yellow("EXAMPLES:"))
+	fmt.Println()
+
+	fmt.Println(white("  ./sukku -d hackerone.com"))
+	fmt.Println(white("  ./sukku -d target.com"))
+	fmt.Println()
+}
+
+func main() {
+
+	showVersion := flag.Bool("v", false, "Show Version")
+
+        enableScreenshots := flag.Bool("screenshots", false, "Website screenshots")
+        enableWayback := flag.Bool("wayback", false, "Historical URLs")
+
+	flag.Usage = func() {
+		helpmenu()
+	}
+
+	banner()
+
+	domain := flag.String("d", "", "Target Domain")
+
+	flag.Parse()
+
+        if *showVersion {
+         fmt.Println(green("Sukku " + version))
+         return
+
+        }
+
+        if *enableScreenshots {
+	  screenshots()
+
+        }
+
+
+        if *enableWayback {
+          fmt.Println("Wayback enable")
+
+        }
+
+        if *domain == "" {
+          helpmenu()
+          return
+
+        }
+
+	subfinder(*domain)
+
+	httpx()
+
+	portscan()
+
+	nuclei()
+
+	jsfinder()
+
+	success("Sukku Scan Completed")
+
+       }
