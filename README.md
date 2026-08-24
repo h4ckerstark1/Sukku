@@ -1,5 +1,6 @@
+
 <p align="center">
-  <img src="https://github.com/h4ckerstark1/Sukku/blob/main/sukku%20screenshot.jpeg?raw=true" width="900" alt="sukku screenshot">
+  <img src="https://github.com/user-attachments/assets/fc2d4eb9-33ec-40e5-be66-6ecfe74d9384" width="900" alt="sukku screenshot">
 <p align="center">
 
 <img src="https://img.shields.io/badge/version-v1.1.0-green">
