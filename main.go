@@ -10,8 +10,7 @@ import (
 )
 
 var (
-
-	version = "v1.1.0"
+	version = "v1.2.0"
 
 	white  = color.New(color.FgHiWhite).SprintFunc()
 	red    = color.New(color.FgHiRed).SprintFunc()
@@ -155,36 +154,34 @@ func screenshots() {
 	info("Running Screenshot Module")
 	os.Mkdir("screenshots", 0755)
 
-        data := []byte("Screenshot module working\n")
+	data := []byte("Screenshot module working\n")
 
-
-        os.WriteFile("screenshots/test.txt", data,0644)
-
+	os.WriteFile("screenshots/test.txt", data, 0644)
 
 	success("Screenshots folder created")
 }
 
 func wayback() {
-    info("Running Wayback Module")
+	info("Running Wayback Module")
 
-    data := []byte("https://example.com/page1\nhttps://example.com/page2\n")
-    os.WriteFile("wayback.txt", data, 0644)
+	data := []byte("https://example.com/page1\nhttps://example.com/page2\n")
+	os.WriteFile("wayback.txt", data, 0644)
 
-    success("Wayback Completed")
+	success("Wayback Completed")
 
 }
 
 func summary() {
 
-    fmt.Println()
-    fmt.Println("========== SUKKU SUMMARY ==========")
-    fmt.Println("Subdomains  : Completed")
-    fmt.Println("Live Hosts  : Completed")
-    fmt.Println("Port Scan   : Completed")
-    fmt.Println("JS Finder   : Completed")
-    fmt.Println("screenshots : Completed")
-    fmt.Println("wayback     : Completed")
-    fmt.Println("===================================")
+	fmt.Println()
+	fmt.Println("========== SUKKU SUMMARY ==========")
+	fmt.Println("Subdomains  : Completed")
+	fmt.Println("Live Hosts  : Completed")
+	fmt.Println("Port Scan   : Completed")
+	fmt.Println("JS Finder   : Completed")
+	fmt.Println("screenshots : Completed")
+	fmt.Println("wayback     : Completed")
+	fmt.Println("===================================")
 }
 
 func helpmenu() {
@@ -204,8 +201,8 @@ func helpmenu() {
 	fmt.Println(white("  -portscan          Port scanning"))
 	fmt.Println(white("  -nuclei            Vulnerability scan"))
 	fmt.Println(white("  -jsfinder          JavaScript file finder"))
-        fmt.Println(white(" --screenshots       Website screenshots"))
-        fmt.Println(white(" --wayback           Historical URLs"))
+	fmt.Println(white(" --screenshots       Website screenshots"))
+	fmt.Println(white(" --wayback           Historical URLs"))
 	fmt.Println()
 
 	fmt.Println(yellow("GENERAL OPTIONS:"))
@@ -222,12 +219,12 @@ func helpmenu() {
 	fmt.Println(white("  ./sukku -d target.com"))
 	fmt.Println()
 }
- func main() {
+func main() {
 	showVersion := flag.Bool("v", false, "Show Version")
 
-        enableScreenshots := flag.Bool("screenshots", false, "Website screenshots")
-        enableWayback := flag.Bool("wayback", false, "Historical URLs")
-        enableSummary := flag.Bool("summary", false, "Show scan summary")
+	enableScreenshots := flag.Bool("screenshots", false, "Website screenshots")
+	enableWayback := flag.Bool("wayback", false, "Historical URLs")
+	enableSummary := flag.Bool("summary", false, "Show scan summary")
 
 	flag.Usage = func() {
 		helpmenu()
@@ -238,7 +235,6 @@ func helpmenu() {
 	domain := flag.String("d", "", "Target Domain")
 
 	flag.Parse()
-
 
 	if *showVersion {
 		fmt.Println(green("Sukku " + version))
@@ -260,14 +256,18 @@ func helpmenu() {
 
 	jsfinder()
 
-        if *enableScreenshots {
-            screenshots()
+	if *enableScreenshots {
+		screenshots()
+	}
 
-        if *enableWayback {
-            wayback()
+	if *enableWayback {
+		wayback()
+	}
 
 	success("Sukku Scan Completed")
-             summary()
 
-}
+	if *enableSummary {
+		summary()
+
+	}
 }

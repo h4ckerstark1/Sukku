@@ -3,7 +3,7 @@
   <img src="https://github.com/user-attachments/assets/fc2d4eb9-33ec-40e5-be66-6ecfe74d9384" width="900" alt="sukku screenshot">
 <p align="center">
 
-<img src="https://img.shields.io/badge/version-v1.1.0-green">
+<img src="https://img.shields.io/badge/version-v1.2.0-green">
 <img src="https://img.shields.io/badge/language-Go-blue">
 <img src="https://img.shields.io/badge/platform-Linux-orange">
 <img src="https://img.shields.io/badge/license-MIT-yellow">
