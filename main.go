@@ -1,12 +1,20 @@
 package main
 
 import (
+	"context"
 	"flag"
 	"fmt"
 	"os"
 	"os/exec"
 
 	"github.com/fatih/color"
+
+	"sukku/internal/modules/crawling"
+	"sukku/internal/modules/probing"
+	"sukku/internal/modules/subdomains"
+	"sukku/internal/modules/vulnerability"
+
+	"sukku/internal/store"
 )
 
 var (
@@ -52,40 +60,37 @@ func failed(msg string) {
 	fmt.Println(red("[ERROR]"), white(msg))
 }
 
-func subfinder(domain string) {
-
+func subfinder(domain string, assetStore *store.AssetStore) {
 	info("Running Subfinder")
 
-	cmd := exec.Command("subfinder", "-d", domain, "-silent")
+	cfg := subdomains.Config{
+		Domain:         domain,
+		SubfinderRaw:   "raw/subfinder.raw",
+		SubdomainsFile: "subdomains.txt",
+	}
 
-	output, err := cmd.Output()
-
-	if err != nil {
+	if err := subdomains.Run(context.Background(), cfg, assetStore); err != nil {
 		failed(err.Error())
 		return
 	}
-
-	os.WriteFile("subdomains.txt", output, 0644)
 
 	success("Subdomains saved in subdomains.txt")
 }
 
-func httpx() {
+func httpx(assetStore *store.AssetStore) {
 
 	info("Running HTTPX")
 
-	command := "cat subdomains.txt | httpx -silent"
+	cfg := probing.Config{
+		SubdomainsFile: "subdomains.txt",
+		HTTPXRaw:       "raw/httpx.raw",
+		LiveFile:       "live.txt",
+	}
 
-	cmd := exec.Command("bash", "-c", command)
-
-	output, err := cmd.Output()
-
-	if err != nil {
+	if err := probing.Run(context.Background(), cfg, assetStore); err != nil {
 		failed(err.Error())
 		return
 	}
-
-	os.WriteFile("live.txt", output, 0644)
 
 	success("Live domains saved in live.txt")
 }
@@ -110,41 +115,36 @@ func portscan() {
 	success("Port scan saved in ports.txt")
 }
 
-func nuclei() {
-
+func nuclei(assetStore *store.AssetStore) {
 	info("Running Nuclei Scan")
 
-	command := "cat live.txt | nuclei -silent"
+	cfg := vulnerability.Config{
+		LiveFile:   "live.txt",
+		NucleiRaw:  "raw/nuclei.raw",
+		NucleiFile: "nuclei.txt",
+	}
 
-	cmd := exec.Command("bash", "-c", command)
-
-	output, err := cmd.Output()
-
-	if err != nil {
+	if err := vulnerability.Run(context.Background(), cfg, assetStore); err != nil {
 		failed(err.Error())
 		return
 	}
-
-	os.WriteFile("nuclei.txt", output, 0644)
 
 	success("Nuclei results saved in nuclei.txt")
 }
 
-func jsfinder() {
-
+func jsfinder(assetStore *store.AssetStore) {
 	info("Running JS Finder")
 
-	command := "cat live.txt | katana -silent | grep '.js' || true"
-	cmd := exec.Command("bash", "-c", command)
+	cfg := crawling.Config{
+		LiveFile:    "live.txt",
+		KatanaRaw:   "raw/katana.raw",
+		JSFilesFile: "jsfiles.txt",
+	}
 
-	output, err := cmd.Output()
-
-	if err != nil {
+	if err := crawling.Run(context.Background(), cfg, assetStore); err != nil {
 		failed(err.Error())
 		return
 	}
-
-	os.WriteFile("jsfiles.txt", output, 0644)
 
 	success("JS files saved in jsfiles.txt")
 }
@@ -246,15 +246,17 @@ func main() {
 		return
 	}
 
-	subfinder(*domain)
+	assetStore := store.NewAssetStore()
 
-	httpx()
+	subfinder(*domain, assetStore)
+
+	httpx(assetStore)
 
 	portscan()
 
-	nuclei()
+	nuclei(assetStore)
 
-	jsfinder()
+	jsfinder(assetStore)
 
 	if *enableScreenshots {
 		screenshots()
