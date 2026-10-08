@@ -4,7 +4,6 @@ import (
 	"context"
 	"flag"
 	"fmt"
-	"os"
 
 	"github.com/fatih/color"
 
@@ -147,38 +146,23 @@ func jsfinder(assetStore *store.AssetStore) {
 }
 
 func screenshots() {
-
-	info("Running Screenshot Module")
-	os.Mkdir("screenshots", 0755)
-
-	data := []byte("Screenshot module working\n")
-
-	os.WriteFile("screenshots/test.txt", data, 0644)
-
-	success("Screenshots folder created")
+	fmt.Println(yellow("[WARN]"), white("Screenshot module is not implemented yet."))
 }
 
 func wayback() {
-	info("Running Wayback Module")
-
-	data := []byte("https://example.com/page1\nhttps://example.com/page2\n")
-	os.WriteFile("wayback.txt", data, 0644)
-
-	success("Wayback Completed")
-
+	fmt.Println(yellow("[WARN]"), white("Wayback module is not implemented yet."))
 }
 
-func summary() {
+func summary(assetStore *store.AssetStore) {
 
 	fmt.Println()
 	fmt.Println("========== SUKKU SUMMARY ==========")
-	fmt.Println("Subdomains  : Completed")
-	fmt.Println("Live Hosts  : Completed")
-	fmt.Println("Port Scan   : Completed")
-	fmt.Println("JS Finder   : Completed")
-	fmt.Println("screenshots : Completed")
-	fmt.Println("wayback     : Completed")
-	fmt.Println("===================================")
+	fmt.Printf("Subdomains    : %d\n", len(assetStore.Domains()))
+	fmt.Printf("Web Endpoints : %d\n", len(assetStore.WebEndpoints()))
+	fmt.Printf("Services      : %d\n", len(assetStore.Services()))
+	fmt.Printf("JS Files      : %d\n", len(assetStore.JSFiles()))
+	fmt.Printf("Findings      : %d\n", len(assetStore.Findings()))
+	fmt.Println("====================================")
 }
 
 func helpmenu() {
@@ -266,7 +250,7 @@ func main() {
 	success("Sukku Scan Completed")
 
 	if *enableSummary {
-		summary()
+		summary(assetStore)
 
 	}
 }
