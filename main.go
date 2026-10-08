@@ -5,11 +5,11 @@ import (
 	"flag"
 	"fmt"
 	"os"
-	"os/exec"
 
 	"github.com/fatih/color"
 
 	"sukku/internal/modules/crawling"
+	"sukku/internal/modules/ports"
 	"sukku/internal/modules/probing"
 	"sukku/internal/modules/subdomains"
 	"sukku/internal/modules/vulnerability"
@@ -95,22 +95,19 @@ func httpx(assetStore *store.AssetStore) {
 	success("Live domains saved in live.txt")
 }
 
-func portscan() {
+func portscan(assetStore *store.AssetStore) {
 
 	info("Running Port Scan")
 
-	command := "nmap -iL live.txt -Pn"
+	cfg := ports.Config{
+		PortscanRaw: "raw/portscan.raw",
+		PortsFile:   "ports.txt",
+	}
 
-	cmd := exec.Command("bash", "-c", command)
-
-	output, err := cmd.Output()
-
-	if err != nil {
+	if err := ports.Run(context.Background(), cfg, assetStore); err != nil {
 		failed(err.Error())
 		return
 	}
-
-	os.WriteFile("ports.txt", output, 0644)
 
 	success("Port scan saved in ports.txt")
 }
@@ -252,7 +249,7 @@ func main() {
 
 	httpx(assetStore)
 
-	portscan()
+	portscan(assetStore)
 
 	nuclei(assetStore)
 
