@@ -2,3 +2,13 @@ sukku
 *.txt
 *.log
 output/
+/sukku
+/raw/
+/resume.cfg
+/subdomains.txt
+/live.txt
+/ports.txt
+/nuclei.txt
+/jsfiles.txt
+/wayback.txt
+/screenshots/
