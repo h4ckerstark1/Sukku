@@ -4,6 +4,7 @@ import (
 	"context"
 	"flag"
 	"fmt"
+	"os"
 
 	"github.com/fatih/color"
 
@@ -59,7 +60,7 @@ func failed(msg string) {
 	fmt.Println(red("[ERROR]"), white(msg))
 }
 
-func subfinder(domain string, assetStore *store.AssetStore) {
+func subfinder(domain string, assetStore *store.AssetStore) error {
 	info("Running Subfinder")
 
 	cfg := subdomains.Config{
@@ -69,14 +70,14 @@ func subfinder(domain string, assetStore *store.AssetStore) {
 	}
 
 	if err := subdomains.Run(context.Background(), cfg, assetStore); err != nil {
-		failed(err.Error())
-		return
+		return fmt.Errorf("subfinder: %w", err)
 	}
 
 	success("Subdomains saved in subdomains.txt")
+	return nil
 }
 
-func httpx(assetStore *store.AssetStore) {
+func httpx(assetStore *store.AssetStore) error {
 
 	info("Running HTTPX")
 
@@ -87,14 +88,14 @@ func httpx(assetStore *store.AssetStore) {
 	}
 
 	if err := probing.Run(context.Background(), cfg, assetStore); err != nil {
-		failed(err.Error())
-		return
+		return fmt.Errorf("httpx: %w", err)
 	}
 
 	success("Live domains saved in live.txt")
+	return nil
 }
 
-func portscan(assetStore *store.AssetStore) {
+func portscan(assetStore *store.AssetStore) error {
 
 	info("Running Port Scan")
 
@@ -104,14 +105,14 @@ func portscan(assetStore *store.AssetStore) {
 	}
 
 	if err := ports.Run(context.Background(), cfg, assetStore); err != nil {
-		failed(err.Error())
-		return
+		return fmt.Errorf("portscan: %w", err)
 	}
 
 	success("Port scan saved in ports.txt")
+	return nil
 }
 
-func nuclei(assetStore *store.AssetStore) {
+func nuclei(assetStore *store.AssetStore) error {
 	info("Running Nuclei Scan")
 
 	cfg := vulnerability.Config{
@@ -121,14 +122,14 @@ func nuclei(assetStore *store.AssetStore) {
 	}
 
 	if err := vulnerability.Run(context.Background(), cfg, assetStore); err != nil {
-		failed(err.Error())
-		return
+		return fmt.Errorf("nuclei: %w", err)
 	}
 
 	success("Nuclei results saved in nuclei.txt")
+	return nil
 }
 
-func jsfinder(assetStore *store.AssetStore) {
+func jsfinder(assetStore *store.AssetStore) error {
 	info("Running JS Finder")
 
 	cfg := crawling.Config{
@@ -138,11 +139,20 @@ func jsfinder(assetStore *store.AssetStore) {
 	}
 
 	if err := crawling.Run(context.Background(), cfg, assetStore); err != nil {
-		failed(err.Error())
-		return
+		return fmt.Errorf("jsfinder: %w", err)
 	}
 
 	success("JS files saved in jsfiles.txt")
+	return nil
+}
+
+func runPipeline(stages ...func() error) error {
+	for _, stage := range stages {
+		if err := stage(); err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 func screenshots() {
@@ -229,15 +239,16 @@ func main() {
 
 	assetStore := store.NewAssetStore()
 
-	subfinder(*domain, assetStore)
-
-	httpx(assetStore)
-
-	portscan(assetStore)
-
-	nuclei(assetStore)
-
-	jsfinder(assetStore)
+	if err := runPipeline(
+		func() error { return subfinder(*domain, assetStore) },
+		func() error { return httpx(assetStore) },
+		func() error { return portscan(assetStore) },
+		func() error { return nuclei(assetStore) },
+		func() error { return jsfinder(assetStore) },
+	); err != nil {
+		failed(err.Error())
+		os.Exit(1)
+	}
 
 	if *enableScreenshots {
 		screenshots()
